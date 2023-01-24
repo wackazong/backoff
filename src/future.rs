@@ -202,16 +202,20 @@ where
 #[cfg(all(feature = "tokio", feature = "async-std"))]
 compile_error!("Feature \"tokio\" and \"async-std\" cannot be enabled at the same time");
 
-#[cfg(feature = "async-std")]
+#[cfg(all(feature = "async-std", not(feature = "wasm-bindgen")))]
 fn rt_sleeper() -> impl Sleeper {
     AsyncStdSleeper
 }
 
-#[cfg(feature = "tokio")]
+#[cfg(all(feature = "tokio", not(feature = "wasm-bindgen")))]
 fn rt_sleeper() -> impl Sleeper {
     TokioSleeper
 }
 
+#[cfg(feature = "wasm-bindgen")]
+fn rt_sleeper() -> impl Sleeper {
+    GlooTimersSleeper
+}
 #[cfg(all(feature = "tokio", not(feature = "wasm-bindgen")))]
 #[cfg_attr(
     docsrs,
