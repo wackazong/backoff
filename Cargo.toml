@@ -24,6 +24,7 @@ pin-project-lite = { version = "0.2.7", optional = true }
 rand = "0.8"
 getrandom = "0.2"
 tokio_1 = { package = "tokio", version = "1.0", features = ["time"], optional = true }
+gloo-timers = { version = "0.2.6", features = ["futures"], optional = true }
 
 [dev-dependencies]
 async_std_1 = { package = "async-std", version = "1.6", features = ["attributes"] }
@@ -33,7 +34,7 @@ futures-executor = "0.3"
 
 [features]
 default = []
-wasm-bindgen = ["instant/wasm-bindgen", "getrandom/js"]
+wasm-bindgen = ["instant/wasm-bindgen", "getrandom/js", "gloo-timers"]
 futures = ["futures-core", "pin-project-lite"]
 tokio = ["futures", "tokio_1"]
 async-std = ["futures", "async_std_1"]

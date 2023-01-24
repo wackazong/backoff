@@ -212,12 +212,18 @@ fn rt_sleeper() -> impl Sleeper {
     TokioSleeper
 }
 
-#[cfg(feature = "tokio")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
-
+#[cfg(all(feature = "tokio", not(feature = "wasm-bindgen")))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(all(feature = "tokio", not(feature = "wasm-bindgen"))))
+)]
 struct TokioSleeper;
-#[cfg(feature = "tokio")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
+
+#[cfg(all(feature = "tokio", not(feature = "wasm-bindgen")))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(all(feature = "tokio", not(feature = "wasm-bindgen"))))
+)]
 impl Sleeper for TokioSleeper {
     type Sleep = ::tokio_1::time::Sleep;
     fn sleep(&self, dur: Duration) -> Self::Sleep {
@@ -225,15 +231,34 @@ impl Sleeper for TokioSleeper {
     }
 }
 
-#[cfg(feature = "async-std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "async-std")))]
+#[cfg(all(feature = "async-std", not(feature = "wasm-bindgen")))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(all(feature = "async-std", not(feature = "wasm-bindgen"))))
+)]
 struct AsyncStdSleeper;
 
-#[cfg(feature = "async-std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "async-std")))]
+#[cfg(all(feature = "async-std", not(feature = "wasm-bindgen")))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(all(feature = "async-std", not(feature = "wasm-bindgen"))))
+)]
 impl Sleeper for AsyncStdSleeper {
     type Sleep = Pin<Box<dyn Future<Output = ()> + Send + 'static>>;
     fn sleep(&self, dur: Duration) -> Self::Sleep {
         Box::pin(::async_std_1::task::sleep(dur))
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[cfg_attr(docsrs, doc(cfg(feature = "wasm-bindgen")))]
+struct GlooTimersSleeper;
+
+#[cfg(feature = "wasm-bindgen")]
+#[cfg_attr(docsrs, doc(cfg(feature = "wasm-bindgen")))]
+impl Sleeper for GlooTimersSleeper {
+    type Sleep = ::gloo_timers::future::TimeoutFuture;
+    fn sleep(&self, dur: Duration) -> Self::Sleep {
+        ::gloo_timers::future::sleep(dur)
     }
 }
