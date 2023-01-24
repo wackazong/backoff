@@ -261,7 +261,7 @@ struct GlooTimersSleeper;
 #[cfg(feature = "wasm-bindgen")]
 #[cfg_attr(docsrs, doc(cfg(feature = "wasm-bindgen")))]
 impl Sleeper for GlooTimersSleeper {
-    type Sleep = ::gloo_timers::future::TimeoutFuture;
+    type Sleep = ::gloo_timers::future::TimeoutFuture + Send + 'static;
     fn sleep(&self, dur: Duration) -> Self::Sleep {
         ::gloo_timers::future::sleep(dur)
     }
